@@ -6,7 +6,7 @@ exports.getUserById = async (id) => {
 };
 
 exports.getAllUsers = async () => {
-    return await User.find().select('-password');
+    return await User.find();
 };
 
 exports.createUser = async (userData) => {
