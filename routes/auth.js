@@ -31,5 +31,14 @@ router.get('/google/redirect',
     }
 );
 
+router.get('/github', passport.authenticate('github', { scope: ['user:email'] }));
+
+router.get('/github/callback',
+    passport.authenticate('github', { session: false }),
+    (req, res) => {
+        const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+        // Redirect to React FE
+        res.redirect(`${process.env.FRONTEND_URL}/oauth-success?token=${token}`);
+    });
 
 module.exports = router;
