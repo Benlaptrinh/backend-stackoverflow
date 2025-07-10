@@ -1,5 +1,6 @@
+
+// Middleware xử lý lỗi tập trung, chuẩn REST
 module.exports = (err, req, res, next) => {
-    // Log lỗi chi tiết
     console.error('[Global Error]', {
         message: err.message,
         stack: err.stack,
@@ -10,11 +11,9 @@ module.exports = (err, req, res, next) => {
         query: req.query
     });
 
-    // Xác định status code
     let statusCode = err.statusCode || res.statusCode;
     if (!statusCode || statusCode === 200) statusCode = 500;
 
-    // Trả về lỗi chuẩn REST
     res.status(statusCode).json({
         success: false,
         error: {

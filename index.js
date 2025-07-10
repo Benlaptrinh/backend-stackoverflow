@@ -11,30 +11,30 @@ const passport = require('./config/passport');
 dotenv.config();
 const app = express();
 
-// Middlewares
+
+// Middleware
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 app.use(passport.initialize());
 
-// Connect Database
+// Kết nối DB
 connectDB();
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/users', require('./routes/user'));
 
-// Default route
+// Health check route
 app.get('/', (req, res) => {
     res.send('API is running...');
 });
 
+// Xử lý lỗi tập trung
+app.use(errorHandler);
+app.use(express.urlencoded({ extended: true }));
 
 const PORT = process.env.PORT || 3000;
-
-// Đặt errorHandler cuối cùng, sau tất cả các route
-app.use(errorHandler);
-
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
