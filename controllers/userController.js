@@ -2,6 +2,9 @@
 const userService = require('../services/userService');
 const bcrypt = require('bcrypt');
 const User = require('../models/User');
+const cloudinary = require('../utils/cloudinary');
+const fs = require('fs');
+
 
 // Test route
 exports.getHello = (req, res) => {
@@ -51,26 +54,21 @@ exports.getAllUsers = async (req, res, next) => {
 
 
 
-// Tạo user mới
 exports.createUser = async (req, res, next) => {
     try {
         const { username, email, password, role } = req.body;
-
         if (!username || !email || !password) {
             return res.status(400).json({ message: 'Missing required fields' });
         }
 
-
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const user = new User({
+        const user = await userService.createUser({
             username,
             email,
-            password: hashedPassword,
-            role: role || 'user',
+            password,
+            role,
             avatar: req.file?.path || null
         });
 
-        await user.save();
         res.status(201).json(user);
     } catch (err) {
         next(err);
@@ -78,10 +76,14 @@ exports.createUser = async (req, res, next) => {
 };
 
 
-
 // Cập nhật user
 exports.updateUser = async (req, res, next) => {
     try {
+        // multer-storage-cloudinary đã upload xong → có sẵn URL
+        if (req.file) {
+            req.body.avatar = req.file.path; // Cloudinary trả về .path là URL
+        }
+
         const updated = await userService.updateUser(req.params.id, req.body);
         if (!updated) return res.status(404).json({ message: 'User not found' });
         res.json(updated);
@@ -89,6 +91,8 @@ exports.updateUser = async (req, res, next) => {
         next(err);
     }
 };
+
+
 
 
 // Xóa user
@@ -106,13 +110,17 @@ exports.deleteUser = async (req, res, next) => {
         next(err);
     }
 };
+
+
+
 exports.upload_Image = async (req, res) => {
     try {
-        // Lưu đường dẫn ảnh vào user.avatar
-        req.user.avatar = req.file.path;
-        await req.user.save();
+        if (!req.file) {
+            return res.status(400).json({ message: 'No file uploaded' });
+        }
 
-        res.json({ avatar: req.file.path });
+        const avatarUrl = await userService.uploadAvatar(req.file, req.user);
+        res.json({ avatar: avatarUrl });
     } catch (err) {
         res.status(500).json({ message: 'Upload failed', error: err.message });
     }

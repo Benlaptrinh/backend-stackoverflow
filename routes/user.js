@@ -15,9 +15,10 @@ router.get('/profile', authMiddleware, userController.getProfile);
 
 // CRUD user (admin or self)
 router.post('/', upload.single('avatar'), userController.createUser);
-router.put('/:id', userController.updateUser);
+// router.put('/:id', userController.updateUser);
+router.put('/:id', upload.single('avatar'), userController.updateUser);
+
 router.delete('/', userController.deleteUser);
-router.post('/upload-avatar', authMiddleware, upload.single('avatar'), userController.upload_Image);
 
 router.get('/:id', authMiddleware, userController.getUserById);
 
