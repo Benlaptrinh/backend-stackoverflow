@@ -1,2 +1,20 @@
-node_modules
+# Node.js
+node_modules/
 .env
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Coverage reports
+coverage/
+
+# VS Code settings (tuỳ)
+.vscode/
+
+# Testing temp
+jest-cache/
+jest-coverage/
+
+# OS files
+.DS_Store
+Thumbs.db

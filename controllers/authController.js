@@ -47,7 +47,7 @@ exports.login = async (req, res, next) => {
 };
 
 exports.refreshAccessToken = async (req, res, next) => {
-    const token = req.cookies.refreshToken;
+    const token = req.cookies?.refreshToken;
 
     // Check for refresh token
     if (!token) {

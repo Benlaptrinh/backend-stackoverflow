@@ -85,9 +85,6 @@ exports.deleteUser = async (req, res, next) => {
     try {
         const { userId } = req.body;
         if (!userId) return res.status(400).json({ message: 'userId is required' });
-        // if (req.user.role !== 'admin' && req.user._id.toString() !== userId) {
-        //     return res.status(403).json({ message: 'Permission denied' });
-        // }
         const deleted = await userService.deleteUser(userId);
         if (!deleted) return res.status(404).json({ message: 'User not found' });
         res.json({ message: 'User deleted successfully' });
