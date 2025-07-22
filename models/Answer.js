@@ -7,6 +7,10 @@ const answerSchema = new Schema({
     author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     isAccepted: { type: Boolean, default: false },
     commentsCount: { type: Number, default: 0 }, // 👈 Thêm dòng này
+    likes: [{
+        user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        likedAt: { type: Date, default: Date.now }
+    }],
     createdAt: { type: Date, default: Date.now },
 });
 

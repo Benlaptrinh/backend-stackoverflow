@@ -5,7 +5,8 @@ const mongoose = require('mongoose');
 const UserSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
-    password: { type: String }, // Có thể null nếu đăng nhập social
+    password: { type: String },
+    reputation: { type: Number, default: 0 },
     avatar: { type: String },
     role: { type: String, enum: ['user', 'admin'], default: 'user' },
     googleId: { type: String, default: null },

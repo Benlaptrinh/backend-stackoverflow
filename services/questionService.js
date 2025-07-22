@@ -1,28 +1,23 @@
 const Question = require('../models/Question');
 const Answer = require('../models/Answer');
 const answerService = require('./answerService');
+const User = require('../models/User');
 
 exports.createQuestion = async ({ title, content, tags, author }) => {
-    return await Question.create({
-        title,
-        content,
-        tags,
-        author,
-    });
+    const question = await Question.create({ title, content, tags, author });
+    await User.findByIdAndUpdate(author, { $inc: { reputation: 5 } }); // hoặc số điểm bạn muốn
+    return question;
 };
-
 exports.getAllQuestions = async () => {
     return await Question.find()
-        .populate('author', 'username avatar')
+        .populate('author', 'username avatar reputation')
         .sort({ createdAt: -1 });
 };
-
 exports.getQuestionById = async (id) => {
     return await Question.findById(id)
         .populate('author', 'username avatar')
         .populate('tags');
 };
-
 exports.incrementAnswersCount = async (questionId) => {
     return await Question.findByIdAndUpdate(
         questionId,
@@ -30,7 +25,6 @@ exports.incrementAnswersCount = async (questionId) => {
         { new: true }
     );
 };
-
 exports.incrementViews = async (questionId) => {
     return await Question.findByIdAndUpdate(
         questionId,
@@ -38,7 +32,6 @@ exports.incrementViews = async (questionId) => {
         { new: true }
     );
 };
-
 exports.toggleUpvote = async (questionId, userId) => {
     const question = await Question.findById(questionId);
     if (!question) throw new Error('Question not found');
@@ -68,7 +61,6 @@ exports.updateQuestion = async (id, data, userId) => {
 
     return await Question.findByIdAndUpdate(id, data, { new: true });
 };
-
 exports.deleteQuestion = async (id, user) => {
     const question = await Question.findById(id);
     if (!question) throw new Error('NOT_FOUND');
@@ -87,7 +79,6 @@ exports.deleteQuestion = async (id, user) => {
     await question.deleteOne();
     return { deleted: true };
 };
-
 exports.searchQuestions = async ({ q, sortBy }) => {
     const filter = {};
 

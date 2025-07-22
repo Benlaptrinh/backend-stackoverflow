@@ -20,7 +20,6 @@ exports.createAnswer = async (req, res, next) => {
         next(err);
     }
 };
-
 exports.getAnswersByQuestion = async (req, res, next) => {
     try {
         const answers = await answerService.getAnswersByQuestion(req.params.questionId);
@@ -35,6 +34,22 @@ exports.deleteAnswer = async (req, res, next) => {
         if (!answer) return res.status(404).json({ message: 'Answer not found' });
 
         res.json({ message: 'Answer and related comments deleted' });
+    } catch (err) {
+        next(err);
+    }
+};
+exports.toggleLike = async (req, res, next) => {
+    try {
+        const result = await answerService.toggleLike(req.params.id, req.user._id);
+        res.json(result);
+    } catch (err) {
+        next(err);
+    }
+};
+exports.getLikeHistory = async (req, res, next) => {
+    try {
+        const likes = await answerService.getLikeHistory(req.params.id);
+        res.json(likes);
     } catch (err) {
         next(err);
     }

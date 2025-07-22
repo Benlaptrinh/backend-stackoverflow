@@ -28,6 +28,7 @@ app.use('/api/questions', require('./routes/question'));
 app.use('/api/answers', require('./routes/answer')); // nếu có
 app.use('/api/comment', require('./routes/comment')); // nếu có
 app.use('/api/folders', require('./routes/folder'));
+app.use('/api/reports', require('./routes/report'));
 
 
 // Health check route

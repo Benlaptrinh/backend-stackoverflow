@@ -21,7 +21,6 @@ exports.createComment = async (req, res, next) => {
         next(err);
     }
 };
-
 exports.getCommentsByAnswer = async (req, res, next) => {
     try {
         const comments = await commentService.getCommentsByAnswer(req.params.answerId);
@@ -44,6 +43,22 @@ exports.deleteComment = async (req, res, next) => {
 
 
         res.json({ message: 'Comment deleted successfully' });
+    } catch (err) {
+        next(err);
+    }
+};
+exports.toggleLike = async (req, res, next) => {
+    try {
+        const result = await commentService.toggleLike(req.params.id, req.user._id);
+        res.json(result);
+    } catch (err) {
+        next(err);
+    }
+};
+exports.getLikeHistory = async (req, res, next) => {
+    try {
+        const likes = await commentService.getLikeHistory(req.params.id);
+        res.json(likes);
     } catch (err) {
         next(err);
     }
