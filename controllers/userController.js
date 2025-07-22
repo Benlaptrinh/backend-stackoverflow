@@ -1,17 +1,10 @@
 
 const userService = require('../services/userService');
-const bcrypt = require('bcrypt');
-const User = require('../models/User');
-const cloudinary = require('../utils/cloudinary');
-const fs = require('fs');
-
 
 // Test route
 exports.getHello = (req, res) => {
     res.json({ message: 'Hello from user controller!' });
 };
-
-
 
 // Lấy profile user đã xác thực (token)
 exports.getProfile = async (req, res, next) => {
@@ -22,7 +15,6 @@ exports.getProfile = async (req, res, next) => {
         next(err);
     }
 };
-
 
 exports.getUserById = async (req, res, next) => {
     try {
@@ -41,7 +33,6 @@ exports.getUserById = async (req, res, next) => {
     }
 };
 
-
 // Lấy tất cả user
 exports.getAllUsers = async (req, res, next) => {
     try {
@@ -51,8 +42,6 @@ exports.getAllUsers = async (req, res, next) => {
         next(err);
     }
 };
-
-
 
 exports.createUser = async (req, res, next) => {
     try {
@@ -75,7 +64,6 @@ exports.createUser = async (req, res, next) => {
     }
 };
 
-
 // Cập nhật user
 exports.updateUser = async (req, res, next) => {
     try {
@@ -91,9 +79,6 @@ exports.updateUser = async (req, res, next) => {
         next(err);
     }
 };
-
-
-
 
 // Xóa user
 exports.deleteUser = async (req, res, next) => {

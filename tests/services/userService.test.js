@@ -25,27 +25,39 @@ describe('userService', () => {
     });
 
     describe('createUser', () => {
-        it('should hash password and create user', async () => {
+        it('should hash password and create user with default role and avatar', async () => {
             const input = {
                 username: 'test',
                 email: 'test@example.com',
                 password: '123456',
-                role: 'user'
+                // không truyền role, avatar
             };
 
             const hashed = 'hashedpassword';
-            const savedUser = { ...input, password: hashed };
+
+            const expectedSavedUser = {
+                username: 'test',
+                email: 'test@example.com',
+                password: hashed,
+                role: 'user',
+                avatar: null,
+            };
 
             bcrypt.hash.mockResolvedValue(hashed);
+
+            const mockSave = jest.fn().mockResolvedValue(expectedSavedUser);
             User.mockImplementation(() => ({
-                save: jest.fn().mockResolvedValue(savedUser)
+                save: mockSave,
             }));
 
             const result = await userService.createUser(input);
-            expect(result).toEqual(savedUser);
+
             expect(bcrypt.hash).toHaveBeenCalledWith('123456', 10);
+            expect(result).toEqual(expectedSavedUser);
+            expect(mockSave).toHaveBeenCalled();
         });
     });
+
 
     describe('updateUser', () => {
         it('should update and return user without password', async () => {
@@ -71,6 +83,17 @@ describe('userService', () => {
             const result = await userService.deleteUser(userId);
             expect(result).toEqual({ _id: userId });
             expect(User.findByIdAndDelete).toHaveBeenCalledWith(userId);
+        });
+    });
+    describe('getUserById', () => {
+        it('should return user without password', async () => {
+            const fakeUser = { _id: 'u123', username: 'alice' };
+            User.findById.mockReturnValue({ select: jest.fn().mockResolvedValue(fakeUser) });
+
+            const result = await userService.getUserById('u123');
+
+            expect(User.findById).toHaveBeenCalledWith('u123');
+            expect(result).toEqual(fakeUser);
         });
     });
 
