@@ -32,15 +32,3 @@ exports.updateUser = async (id, userData) => {
 exports.deleteUser = async (id) => {
     return User.findByIdAndDelete(id);
 };
-
-exports.uploadAvatar = async (file, user) => {
-    const result = await cloudinary.uploader.upload(file.path, {
-        folder: 'avatars',
-    });
-
-    user.avatar = result.secure_url;
-    await user.save();
-    fs.unlinkSync(file.path);
-
-    return result.secure_url;
-};
