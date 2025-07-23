@@ -37,14 +37,19 @@ exports.getUserById = async (req, res, next) => {
 exports.getAllUsers = async (req, res, next) => {
     try {
         const users = await userService.getAllUsers();
-        const io = req.app.get('io'); // lấy io từ app
-        io.emit("viewNotice", "có người xem bạn"); // gửi event tới tất cả client
+
+        if (req.app?.get) {
+            const io = req.app.get('io');
+            io.emit("viewNotice", "có người xem bạn");
+        }
 
         res.json(users);
     } catch (err) {
         next(err);
     }
 };
+
+
 
 exports.createUser = async (req, res, next) => {
     try {

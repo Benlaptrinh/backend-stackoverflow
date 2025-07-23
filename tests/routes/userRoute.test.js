@@ -13,6 +13,7 @@ jest.mock('../../middlewares/authMiddleware', () => (req, res, next) => {
 
 const app = express();
 app.use(express.json());
+app.set('io', { emit: jest.fn() }); // ✅ Thêm dòng này
 app.use('/user', userRouter);
 
 describe('[ROUTE] /user', () => {
