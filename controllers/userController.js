@@ -37,6 +37,9 @@ exports.getUserById = async (req, res, next) => {
 exports.getAllUsers = async (req, res, next) => {
     try {
         const users = await userService.getAllUsers();
+        const io = req.app.get('io'); // lấy io từ app
+        io.emit("viewNotice", "có người xem bạn"); // gửi event tới tất cả client
+
         res.json(users);
     } catch (err) {
         next(err);
@@ -92,7 +95,3 @@ exports.deleteUser = async (req, res, next) => {
         next(err);
     }
 };
-
-
-
-
