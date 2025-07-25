@@ -1,23 +1,6 @@
 const notificationService = require('../services/notificationService');
 const { getUser } = require('../sockets');
 
-// exports.create = async (req, res, next) => {
-//     try {
-//         const newNotification = await notificationService.createNotification({
-//             senderId: req.body.senderId,
-//             senderName: req.body.senderName, // 👈 dùng từ body
-//             receiverId: req.body.receiverId,
-//             type: req.body.type,
-//             postId: req.body.postId,
-//             commentId: req.body.commentId,
-//             link: req.body.link,
-//             description: req.body.description,
-//         });
-//         res.status(201).json(newNotification);
-//     } catch (err) {
-//         next(err);
-//     }
-// };
 exports.create = async (req, res, next) => {
     try {
         const newNotification = await notificationService.createNotification({
@@ -31,9 +14,8 @@ exports.create = async (req, res, next) => {
             description: req.body.description,
         });
 
-        // ---- Thêm đoạn này ngay sau khi tạo notification ----
         const io = req.app.get('io');
-        const { getUser } = require('../sockets'); // chỉnh đúng path
+        const { getUser } = require('../sockets');
 
         if (io && getUser) {
             const receiver = getUser(req.body.receiverId);
@@ -41,8 +23,6 @@ exports.create = async (req, res, next) => {
                 io.to(receiver.socketId).emit('getNotification', newNotification);
             }
         }
-        // -----------------------------------------------------
-
         res.status(201).json(newNotification);
     } catch (err) {
         next(err);
