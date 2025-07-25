@@ -2,6 +2,7 @@ const Question = require('../models/Question');
 const Answer = require('../models/Answer');
 const answerService = require('./answerService');
 const User = require('../models/User');
+const mongoose = require('mongoose'); // ✅ THÊM DÒNG NÀY
 
 exports.createQuestion = async ({ title, content, tags, author }) => {
     const question = await Question.create({ title, content, tags, author });
@@ -11,6 +12,7 @@ exports.createQuestion = async ({ title, content, tags, author }) => {
 exports.getAllQuestions = async () => {
     return await Question.find()
         .populate('author', 'username avatar reputation')
+        .populate('tags')
         .sort({ createdAt: -1 });
 };
 exports.getQuestionById = async (id) => {
@@ -52,7 +54,9 @@ exports.toggleUpvote = async (questionId, userId) => {
     };
 };
 exports.updateQuestion = async (id, data, userId) => {
-    const question = await Question.findById(id);
+    const question = await Question.findById(id)
+        .populate('author', 'username avatar')
+        .populate('tags');
     if (!question) throw new Error('NOT_FOUND');
 
     if (question.author.toString() !== userId.toString()) {
@@ -100,6 +104,33 @@ exports.searchQuestions = async ({ q, sortBy }) => {
         },
         { $sort: sortOption },
         { $limit: 50 } // giới hạn số lượng trả về
+    ]);
+
+    return questions;
+};
+exports.searchQuestions = async ({ q, sortBy, tagId }) => {
+    const filter = {};
+
+    if (q) {
+        filter.title = { $regex: q, $options: 'i' };
+    }
+
+    if (tagId) {
+        filter.tags = new mongoose.Types.ObjectId(tagId); // ✅ đúng cú pháp
+    }
+    let sortOption = { createdAt: -1 };
+    if (sortBy === 'views') sortOption = { views: -1 };
+    if (sortBy === 'votes') sortOption = { upvotesCount: -1 };
+
+    const questions = await Question.aggregate([
+        { $match: filter },
+        {
+            $addFields: {
+                upvotesCount: { $size: '$upvotes' }
+            }
+        },
+        { $sort: sortOption },
+        { $limit: 50 }
     ]);
 
     return questions;

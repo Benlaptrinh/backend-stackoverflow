@@ -1,5 +1,4 @@
 const questionService = require('../services/questionService');
-const { classify } = require('programming-language-classifier');
 const validateCppQuestion = require('../utils/validateCppQuestion'); // ⬅ thêm dòng này
 
 exports.createQuestion = async (req, res, next) => {
@@ -76,12 +75,25 @@ exports.deleteQuestion = async (req, res, next) => {
         next(err);
     }
 };
+// exports.searchQuestions = async (req, res, next) => {
+//     try {
+//         const { q, sort } = req.query;
+//         const questions = await questionService.searchQuestions({
+//             q,
+//             sortBy: sort
+//         });
+//         res.json(questions);
+//     } catch (err) {
+//         next(err);
+//     }
+// };
 exports.searchQuestions = async (req, res, next) => {
     try {
-        const { q, sort } = req.query;
+        const { q, sort, tag } = req.query;
         const questions = await questionService.searchQuestions({
             q,
-            sortBy: sort
+            sortBy: sort,
+            tagId: tag
         });
         res.json(questions);
     } catch (err) {
