@@ -3,6 +3,7 @@
 ![CI](https://github.com/Benlaptrinh/BackEnd_Stackoverflow/actions/workflows/main.yml/badge.svg)
 ![Node.js](https://img.shields.io/badge/node-18-green)
 ![License](https://img.shields.io/badge/license-MIT-blue)
+[![codecov](https://codecov.io/gh/Benlaptrinh/backend-stackoverflow/branch/main/graph/badge.svg)](https://codecov.io/gh/Benlaptrinh/backend-stackoverflow)
 
 📌 A scalable backend API that mimics StackOverflow — built with Node.js, Express, MongoDB, and Socket.IO.
 
