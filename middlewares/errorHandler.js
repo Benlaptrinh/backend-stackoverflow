@@ -1,6 +1,4 @@
-
-// Middleware xử lý lỗi tập trung, chuẩn REST
-module.exports = (err, req, res, next) => {
+module.exports = (err, req, res) => {
     console.error('[Global Error]', {
         message: err.message,
         stack: err.stack,

@@ -1,7 +1,5 @@
 const answerService = require('../services/answerService');
 const questionService = require('../services/questionService');
-const commentService = require('../services/commentService');
-const Answer = require('../models/Answer');
 
 exports.createAnswer = async (req, res, next) => {
     try {
