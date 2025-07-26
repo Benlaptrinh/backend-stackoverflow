@@ -1,5 +1,4 @@
-<img width="100" height="100" alt="image" src="<img width="512" height="512" alt="image" src="https://github.com/user-attachments/assets/d895b228-8d21-435f-b4f4-9411b022f646" />
-" /># BackEnd_Stackoverflow
+<img width="512" height="512" alt="image" src="https://github.com/user-attachments/assets/d895b228-8d21-435f-b4f4-9411b022f646" /># BackEnd_Stackoverflow
 
 ![CI](https://github.com/Benlaptrinh/BackEnd_Stackoverflow/actions/workflows/main.yml/badge.svg)
 ![Node.js](https://img.shields.io/badge/node-18-green)
