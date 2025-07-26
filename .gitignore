@@ -8,7 +8,8 @@ npm-debug.log*
 
 # Test coverage
 
-coverage/lcov-report/
+coverage/
+
 
 # System
 .DS_Store
