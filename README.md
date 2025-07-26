@@ -1,4 +1,4 @@
-# BackEnd_Stackoverflow
+<img width="3000" height="2000" alt="image" src="https://github.com/user-attachments/assets/76c32e5b-4a56-4378-a372-61367db3cb02" /># BackEnd_Stackoverflow
 
 ![CI](https://github.com/Benlaptrinh/BackEnd_Stackoverflow/actions/workflows/main.yml/badge.svg)
 ![Node.js](https://img.shields.io/badge/node-18-green)
@@ -25,7 +25,8 @@
 
 | Ask Question Flow | Real-time Notification |
 |-------------------|------------------------|
-| ![ask](https://res.cloudinary.com/demo/image/upload/q_40/v1620000000/sample.jpg) | ![noti](https://res.cloudinary.com/demo/image/upload/q_40/v1620000001/sample2.jpg) |
+| ![ask](<img width="3000" height="2000" alt="image" src="https://github.com/user-attachments/assets/f3b9d37a-f53c-49f0-ba8b-85e9d226f5b3" />
+) | ![noti](https://res.cloudinary.com/demo/image/upload/q_40/v1620000001/sample2.jpg) |
 
 > _(Bạn có thể thay bằng hình thật từ FE hoặc demo video gif sau)_
 
