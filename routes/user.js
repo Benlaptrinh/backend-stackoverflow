@@ -3,10 +3,11 @@ const router = express.Router();
 const userController = require('../controllers/userController');
 const authMiddleware = require('../middlewares/authMiddleware');
 const upload = require('../middlewares/upload'); // 👈 Đặt ở đây mới đúng
+const { userLimiter } = require('../middlewares/rateLimiters');
 
 router.get('/hello', userController.getHello);
 
-router.get('/', userController.getAllUsers);
+router.get('/', userLimiter, userController.getAllUsers);
 
 router.get('/profile', authMiddleware, userController.getProfile);
 
