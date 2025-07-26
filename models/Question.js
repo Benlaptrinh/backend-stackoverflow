@@ -9,6 +9,10 @@ const questionSchema = new Schema({
     upvotes: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     views: { type: Number, default: 0 },
     answersCount: { type: Number, default: 0 },
+    images: {
+        type: [String],
+        default: []
+    },
     createdAt: { type: Date, default: Date.now },
 });
 

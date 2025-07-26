@@ -2,9 +2,9 @@ const Answer = require('../models/Answer');
 const commentService = require('./commentService');
 const User = require('../models/User');
 
-exports.createAnswer = async ({ content, question, author }) => {
-    const answer = await Answer.create({ content, question, author });
-    await User.findByIdAndUpdate(author, { $inc: { reputation: 10 } }); // hoặc số điểm bạn muốn
+exports.createAnswer = async ({ content, question, author, image }) => {
+    const answer = await Answer.create({ content, question, author, image });
+    await User.findByIdAndUpdate(author, { $inc: { reputation: 10 } });
     return answer;
 };
 
@@ -51,3 +51,25 @@ exports.getLikeHistory = async (answerId) => {
     if (!answer) throw new Error('Answer not found');
     return answer.likes;
 };
+
+exports.updateAnswer = async (answerId, newContent, userId) => {
+    const answer = await Answer.findById(answerId);
+    if (!answer) throw new Error('NOT_FOUND');
+
+    if (answer.author.toString() !== userId.toString()) {
+        throw new Error('FORBIDDEN');
+    }
+
+    answer.content = newContent;
+    await answer.save();
+
+    return answer;
+};
+
+exports.getAllAnswers = async () => {
+    return await Answer.find()
+        .populate('author', 'username avatar reputation')
+        .populate('question', 'title')
+        .sort({ createdAt: -1 });
+};
+

@@ -11,6 +11,8 @@ const answerSchema = new Schema({
         user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
         likedAt: { type: Date, default: Date.now }
     }],
+    image: { type: String, default: null },
+
     createdAt: { type: Date, default: Date.now },
 });
 

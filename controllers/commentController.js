@@ -5,17 +5,20 @@ const Comment = require('../models/Comment');
 exports.createComment = async (req, res, next) => {
     try {
         const { content, answer, parentComment } = req.body;
+        const image = req.file?.path || null;
 
         const comment = await commentService.createComment({
             content,
             answer,
             parentComment: parentComment || null,
-            author: req.user._id
+            author: req.user._id,
+            image
         });
 
         if (!parentComment) {
             await Answer.findByIdAndUpdate(answer, { $inc: { commentsCount: 1 } });
         }
+
         res.status(201).json(comment);
     } catch (err) {
         next(err);
@@ -63,6 +66,15 @@ exports.getLikeHistory = async (req, res, next) => {
     try {
         const likes = await commentService.getLikeHistory(req.params.id);
         res.json(likes);
+    } catch (err) {
+        next(err);
+    }
+};
+
+exports.getAllComments = async (req, res, next) => {
+    try {
+        const comments = await commentService.getAllComments();
+        res.json(comments);
     } catch (err) {
         next(err);
     }

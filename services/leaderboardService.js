@@ -67,7 +67,6 @@ exports.getTopUsersByFollowers = async () => {
     ]);
 };
 
-
 exports.getTopAnswersByLikes = async () => {
     const top = await Answer.aggregate([
         {

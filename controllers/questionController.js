@@ -11,14 +11,15 @@ exports.createQuestion = async (req, res, next) => {
                 message: 'Câu hỏi không liên quan đến C++ hoặc thiếu code minh hoạ.'
             });
         }
+        const images = req.files?.map(file => file.path) || [];
 
         const question = await questionService.createQuestion({
             title,
             content,
             tags,
             author: req.user._id,
+            images
         });
-
         res.status(201).json(question);
     } catch (err) {
         next(err);

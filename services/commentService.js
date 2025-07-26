@@ -27,9 +27,9 @@ exports.getLikeHistory = async (commentId) => {
     return comment.likes;
 };
 
-exports.createComment = async ({ content, answer, author, parentComment }) => {
-    const comment = await Comment.create({ content, answer, author, parentComment });
-    await User.findByIdAndUpdate(author, { $inc: { reputation: 2 } }); // hoặc số điểm bạn muốn
+exports.createComment = async ({ content, answer, author, parentComment, image }) => {
+    const comment = await Comment.create({ content, answer, author, parentComment, image });
+    await User.findByIdAndUpdate(author, { $inc: { reputation: 2 } });
     return comment;
 };
 
@@ -63,4 +63,11 @@ exports.decreaseAnswerCommentCountIfRoot = async (comment) => {
         const Answer = require('../models/Answer');
         await Answer.findByIdAndUpdate(comment.answer, { $inc: { commentsCount: -1 } });
     }
+};
+
+exports.getAllComments = async () => {
+    return await Comment.find()
+        .populate('author', 'username avatar')
+        .populate('answer') // hoặc .populate({ path: 'answer', select: 'content' }) nếu cần gọn
+        .sort({ createdAt: -1 });
 };

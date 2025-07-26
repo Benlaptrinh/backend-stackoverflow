@@ -4,9 +4,10 @@ const answerService = require('./answerService');
 const User = require('../models/User');
 const mongoose = require('mongoose'); // ✅ THÊM DÒNG NÀY
 
-exports.createQuestion = async ({ title, content, tags, author }) => {
-    const question = await Question.create({ title, content, tags, author });
-    await User.findByIdAndUpdate(author, { $inc: { reputation: 5 } }); // hoặc số điểm bạn muốn
+
+exports.createQuestion = async ({ title, content, tags, author, images }) => {
+    const question = await Question.create({ title, content, tags, author, images });
+    await User.findByIdAndUpdate(author, { $inc: { reputation: 5 } });
     return question;
 };
 
