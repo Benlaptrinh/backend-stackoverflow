@@ -33,3 +33,5 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: Benlaptrinh/backend-stackoverflow
+          files: ./coverage/lcov.info
+
