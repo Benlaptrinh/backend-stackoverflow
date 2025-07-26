@@ -5,6 +5,7 @@ const addNewUser = (userId, socketId, senderName, senderAvatar) => {
         onlineUsers.push({ userId, socketId, senderName, senderAvatar });
     }
 };
+
 const removeUser = (socketId) => {
     onlineUsers = onlineUsers.filter((user) => user.socketId !== socketId);
 };
@@ -12,12 +13,14 @@ const removeUser = (socketId) => {
 const getUser = (userId) => {
     return onlineUsers.find((user) => user.userId === userId);
 };
+
 const emitToReceiver = (receiverId, event, payload) => {
     const receiver = getUser(receiverId);
     if (receiver) {
         io.to(receiver.socketId).emit(event, payload);
     }
 };
+
 function handleSocketConnection(socket) {
     console.log("✅ Socket connected:", socket.id);
 
@@ -34,15 +37,6 @@ function handleSocketConnection(socket) {
             description
         });
     });
-
-    // socket.on("sendMessage", ({ senderId, receiverId, postId, parentCommentId }) => {
-    //     emitToReceiver(receiverId, "getMessage", {
-    //         senderId,
-    //         receiverId,
-    //         postId,
-    //         parentCommentId
-    //     });
-    // });
 
     socket.on("sendMessage", ({ senderId, receiverId, postId, parentCommentId, senderName, senderAvatar }) => {
         emitToReceiver(receiverId, "getMessage", {
@@ -63,6 +57,7 @@ function handleSocketConnection(socket) {
     });
 
 }
+
 let io;
 module.exports = (_io) => {
     io = _io;

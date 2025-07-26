@@ -9,17 +9,20 @@ exports.createQuestion = async ({ title, content, tags, author }) => {
     await User.findByIdAndUpdate(author, { $inc: { reputation: 5 } }); // hoặc số điểm bạn muốn
     return question;
 };
+
 exports.getAllQuestions = async () => {
     return await Question.find()
         .populate('author', 'username avatar reputation')
         .populate('tags')
         .sort({ createdAt: -1 });
 };
+
 exports.getQuestionById = async (id) => {
     return await Question.findById(id)
         .populate('author', 'username avatar')
         .populate('tags');
 };
+
 exports.incrementAnswersCount = async (questionId) => {
     return await Question.findByIdAndUpdate(
         questionId,
@@ -27,6 +30,7 @@ exports.incrementAnswersCount = async (questionId) => {
         { new: true }
     );
 };
+
 exports.incrementViews = async (questionId) => {
     return await Question.findByIdAndUpdate(
         questionId,
@@ -34,6 +38,7 @@ exports.incrementViews = async (questionId) => {
         { new: true }
     );
 };
+
 exports.toggleUpvote = async (questionId, userId) => {
     const question = await Question.findById(questionId);
     if (!question) throw new Error('Question not found');
@@ -53,6 +58,7 @@ exports.toggleUpvote = async (questionId, userId) => {
         count: question.upvotes.length,
     };
 };
+
 exports.updateQuestion = async (id, data, userId) => {
     const question = await Question.findById(id)
         .populate('author', 'username avatar')
@@ -65,6 +71,7 @@ exports.updateQuestion = async (id, data, userId) => {
 
     return await Question.findByIdAndUpdate(id, data, { new: true });
 };
+
 exports.deleteQuestion = async (id, user) => {
     const question = await Question.findById(id);
     if (!question) throw new Error('NOT_FOUND');
@@ -83,6 +90,7 @@ exports.deleteQuestion = async (id, user) => {
     await question.deleteOne();
     return { deleted: true };
 };
+
 exports.searchQuestions = async ({ q, sortBy }) => {
     const filter = {};
 
@@ -108,6 +116,7 @@ exports.searchQuestions = async ({ q, sortBy }) => {
 
     return questions;
 };
+
 exports.searchQuestions = async ({ q, sortBy, tagId }) => {
     const filter = {};
 
@@ -132,6 +141,23 @@ exports.searchQuestions = async ({ q, sortBy, tagId }) => {
         { $sort: sortOption },
         { $limit: 50 }
     ]);
+
+    return questions;
+};
+
+exports.getQuestionsByUserIfFollowed = async (currentUserId, targetUserId) => {
+    const currentUser = await User.findById(currentUserId);
+
+    const isFollowing = currentUser.following.includes(targetUserId);
+
+    if (!isFollowing && currentUserId.toString() !== targetUserId.toString()) {
+        throw new Error('NOT_ALLOWED');
+    }
+
+    const questions = await Question.find({ author: targetUserId })
+        .populate('tags')
+        .populate('author', 'username avatar reputation')
+        .sort({ createdAt: -1 });
 
     return questions;
 };

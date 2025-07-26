@@ -43,6 +43,7 @@ exports.toggleUpvote = async (req, res, next) => {
         next(err);
     }
 };
+
 exports.updateQuestion = async (req, res, next) => {
     try {
         const updated = await questionService.updateQuestion(
@@ -61,6 +62,7 @@ exports.updateQuestion = async (req, res, next) => {
         next(err);
     }
 };
+
 exports.deleteQuestion = async (req, res, next) => {
     try {
         await questionService.deleteQuestion(req.params.id, req.user);
@@ -75,18 +77,7 @@ exports.deleteQuestion = async (req, res, next) => {
         next(err);
     }
 };
-// exports.searchQuestions = async (req, res, next) => {
-//     try {
-//         const { q, sort } = req.query;
-//         const questions = await questionService.searchQuestions({
-//             q,
-//             sortBy: sort
-//         });
-//         res.json(questions);
-//     } catch (err) {
-//         next(err);
-//     }
-// };
+
 exports.searchQuestions = async (req, res, next) => {
     try {
         const { q, sort, tag } = req.query;
@@ -97,6 +88,23 @@ exports.searchQuestions = async (req, res, next) => {
         });
         res.json(questions);
     } catch (err) {
+        next(err);
+    }
+};
+
+exports.getQuestionsByUser = async (req, res, next) => {
+    try {
+        const questions = await questionService.getQuestionsByUserIfFollowed(
+            req.user._id,
+            req.params.id
+        );
+        res.json(questions);
+    } catch (err) {
+        if (err.message === 'NOT_ALLOWED') {
+            return res.status(403).json({
+                message: 'Bạn cần follow người này để xem câu hỏi của họ.'
+            });
+        }
         next(err);
     }
 };

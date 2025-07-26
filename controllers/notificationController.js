@@ -1,5 +1,4 @@
 const notificationService = require('../services/notificationService');
-const { getUser } = require('../sockets');
 
 exports.create = async (req, res, next) => {
     try {
@@ -28,8 +27,6 @@ exports.create = async (req, res, next) => {
         next(err);
     }
 };
-
-
 
 exports.getByUser = async (req, res, next) => {
     try {

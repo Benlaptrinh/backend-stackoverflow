@@ -17,10 +17,8 @@ exports.getAllReports = async () => {
 };
 
 exports.resolveReport = async (reportId, action) => {
-    // action: 'approved' hoặc 'rejected'
     return await Report.findByIdAndUpdate(reportId, { status: action }, { new: true });
 };
-
 
 exports.handleViolation = async (report, adminUser) => {
     let contentAuthor = null;

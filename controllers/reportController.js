@@ -1,8 +1,4 @@
 const reportService = require('../services/reportService');
-const Question = require('../models/Question');
-const Answer = require('../models/Answer');
-const Comment = require('../models/Comment');
-const User = require('../models/User');
 
 exports.createReport = async (req, res, next) => {
     try {

@@ -20,6 +20,7 @@ exports.createAnswer = async (req, res, next) => {
         next(err);
     }
 };
+
 exports.getAnswersByQuestion = async (req, res, next) => {
     try {
         const answers = await answerService.getAnswersByQuestion(req.params.questionId);
@@ -28,6 +29,7 @@ exports.getAnswersByQuestion = async (req, res, next) => {
         next(err);
     }
 };
+
 exports.deleteAnswer = async (req, res, next) => {
     try {
         const answer = await answerService.deleteAnswerById(req.params.id);
@@ -38,6 +40,7 @@ exports.deleteAnswer = async (req, res, next) => {
         next(err);
     }
 };
+
 exports.toggleLike = async (req, res, next) => {
     try {
         const result = await answerService.toggleLike(req.params.id, req.user._id);
@@ -46,6 +49,7 @@ exports.toggleLike = async (req, res, next) => {
         next(err);
     }
 };
+
 exports.getLikeHistory = async (req, res, next) => {
     try {
         const likes = await answerService.getLikeHistory(req.params.id);

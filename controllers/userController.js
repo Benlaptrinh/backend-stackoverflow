@@ -1,12 +1,10 @@
 
 const userService = require('../services/userService');
 
-// Test route
 exports.getHello = (req, res) => {
     res.json({ message: 'Hello from user controller!' });
 };
 
-// Lấy profile user đã xác thực (token)
 exports.getProfile = async (req, res, next) => {
     try {
         if (!req.user) return res.status(401).json({ message: 'Unauthorized' });
@@ -33,7 +31,6 @@ exports.getUserById = async (req, res, next) => {
     }
 };
 
-// Lấy tất cả user
 exports.getAllUsers = async (req, res, next) => {
     try {
         const users = await userService.getAllUsers();
@@ -48,8 +45,6 @@ exports.getAllUsers = async (req, res, next) => {
         next(err);
     }
 };
-
-
 
 exports.createUser = async (req, res, next) => {
     try {
@@ -72,7 +67,6 @@ exports.createUser = async (req, res, next) => {
     }
 };
 
-// Cập nhật user
 exports.updateUser = async (req, res, next) => {
     try {
         // multer-storage-cloudinary đã upload xong → có sẵn URL
@@ -88,7 +82,6 @@ exports.updateUser = async (req, res, next) => {
     }
 };
 
-// Xóa user
 exports.deleteUser = async (req, res, next) => {
     try {
         const { userId } = req.body;
@@ -97,6 +90,34 @@ exports.deleteUser = async (req, res, next) => {
         if (!deleted) return res.status(404).json({ message: 'User not found' });
         res.json({ message: 'User deleted successfully' });
     } catch (err) {
+        next(err);
+    }
+};
+
+exports.toggleFollow = async (req, res, next) => {
+    try {
+        const targetUserId = req.params.id;
+        const result = await userService.toggleFollow(req.user._id, targetUserId);
+        res.json(result);
+    } catch (err) {
+        if (err.message === 'CANNOT_FOLLOW_SELF') {
+            return res.status(400).json({ message: 'Bạn không thể tự follow chính mình.' });
+        }
+        if (err.message === 'USER_NOT_FOUND') {
+            return res.status(404).json({ message: 'Người dùng không tồn tại.' });
+        }
+        next(err);
+    }
+};
+
+exports.getPublicProfile = async (req, res, next) => {
+    try {
+        const profile = await userService.getPublicProfile(req.params.id);
+        res.json(profile);
+    } catch (err) {
+        if (err.message === 'USER_NOT_FOUND') {
+            return res.status(404).json({ message: 'User not found' });
+        }
         next(err);
     }
 };

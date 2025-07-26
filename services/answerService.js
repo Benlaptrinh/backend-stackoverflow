@@ -23,6 +23,7 @@ exports.deleteAnswerById = async (answerId) => {
 
     return answer;
 };
+
 exports.toggleLike = async (answerId, userId) => {
     const answer = await Answer.findById(answerId);
     if (!answer) throw new Error('Answer not found');
@@ -44,7 +45,6 @@ exports.toggleLike = async (answerId, userId) => {
     await answer.save();
     return { liked, likeCount: answer.likes.length };
 };
-
 
 exports.getLikeHistory = async (answerId) => {
     const answer = await Answer.findById(answerId).populate('likes.user', 'username avatar');

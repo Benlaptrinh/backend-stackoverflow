@@ -1,4 +1,3 @@
-// services/tagService.js
 const Tag = require('../models/Tag');
 const Question = require('../models/Question');
 
@@ -25,6 +24,7 @@ exports.getQuestionsByTag = async (tagId) => {
         .populate('tags')
         .populate('author', 'username avatar reputation');
 };
+
 exports.getPopularTags = async (limit = 10) => {
     const agg = await Question.aggregate([
         { $unwind: '$tags' },

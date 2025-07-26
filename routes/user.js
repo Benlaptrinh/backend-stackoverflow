@@ -4,16 +4,12 @@ const userController = require('../controllers/userController');
 const authMiddleware = require('../middlewares/authMiddleware');
 const upload = require('../middlewares/upload'); // 👈 Đặt ở đây mới đúng
 
-
-
-// Public routes
 router.get('/hello', userController.getHello);
+
 router.get('/', userController.getAllUsers);
 
-// Protected routes
 router.get('/profile', authMiddleware, userController.getProfile);
 
-// CRUD user (admin or self)
 router.post('/', upload.single('avatar'), userController.createUser);
 
 router.put('/:id', upload.single('avatar'), userController.updateUser);
@@ -21,5 +17,9 @@ router.put('/:id', upload.single('avatar'), userController.updateUser);
 router.delete('/', userController.deleteUser);
 
 router.get('/:id', authMiddleware, userController.getUserById);
+
+router.post('/:id/follow', authMiddleware, userController.toggleFollow);
+
+router.get('/:id/profile', userController.getPublicProfile);
 
 module.exports = router;

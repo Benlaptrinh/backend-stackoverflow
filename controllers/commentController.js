@@ -21,6 +21,7 @@ exports.createComment = async (req, res, next) => {
         next(err);
     }
 };
+
 exports.getCommentsByAnswer = async (req, res, next) => {
     try {
         const comments = await commentService.getCommentsByAnswer(req.params.answerId);
@@ -29,6 +30,7 @@ exports.getCommentsByAnswer = async (req, res, next) => {
         next(err);
     }
 };
+
 exports.deleteComment = async (req, res, next) => {
     try {
         const commentId = req.params.id;
@@ -47,6 +49,7 @@ exports.deleteComment = async (req, res, next) => {
         next(err);
     }
 };
+
 exports.toggleLike = async (req, res, next) => {
     try {
         const result = await commentService.toggleLike(req.params.id, req.user._id);
@@ -55,6 +58,7 @@ exports.toggleLike = async (req, res, next) => {
         next(err);
     }
 };
+
 exports.getLikeHistory = async (req, res, next) => {
     try {
         const likes = await commentService.getLikeHistory(req.params.id);
