@@ -1,6 +1,7 @@
 # BackEnd_Stackoverflow
 
 ![CI](https://github.com/Benlaptrinh/BackEnd_Stackoverflow/actions/workflows/main.yml/badge.svg)
+![Node.js](https://img.shields.io/badge/node-18-green)
 
 📌 A backend project that clones a mini StackOverflow API using Express.js + MongoDB.
 
