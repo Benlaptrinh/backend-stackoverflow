@@ -43,6 +43,7 @@ app.use('/api/folders', require('./routes/folder'));
 app.use('/api/reports', require('./routes/report'));
 app.use('/api/notifications', require('./routes/notification'));
 app.use('/api/tags', require('./routes/tag'));
+app.use('/api/leaderboard', require('./routes/leaderboard'));
 
 // ==== Health check ====
 app.get('/', (req, res) => {
