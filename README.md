@@ -1,11 +1,22 @@
 # BackEnd_Stackoverflow
 
-![CI](https://github.com/Benlaptrinh/BackEnd_Stackoverflow/actions/workflows/main.yml/badge.svg)
+[![CI](https://github.com/Benlaptrinh/BackEnd_Stackoverflow/actions/workflows/main.yml/badge.svg)](https://github.com/Benlaptrinh/BackEnd_Stackoverflow/actions/workflows/main.yml)
+[![codecov](https://codecov.io/gh/Benlaptrinh/backend-stackoverflow/branch/main/graph/badge.svg)](https://codecov.io/gh/Benlaptrinh/backend-stackoverflow)
 ![Node.js](https://img.shields.io/badge/node-18-green)
 ![License](https://img.shields.io/badge/license-MIT-blue)
-[![codecov](https://codecov.io/gh/Benlaptrinh/backend-stackoverflow/branch/main/graph/badge.svg)](https://codecov.io/gh/Benlaptrinh/backend-stackoverflow)
 
 📌 A scalable backend API that mimics StackOverflow — built with Node.js, Express, MongoDB, and Socket.IO.
+
+---
+
+## 📚 Table of Contents
+
+- [Features](#-features)
+- [Screenshots](#-screenshots)
+- [Testing](#-testing)
+- [Tech Stack](#-tech-stack)
+- [Project Structure](#-project-structure)
+- [Getting Started](#-getting-started)
 
 ---
 
@@ -15,7 +26,7 @@
 - 📝 **Ask & answer questions** with Markdown + code + images
 - 💬 **Nested comments** with like system
 - 🗳 **Voting, tags, folders, following**
-- 📩 **Real-time + stored notifications** (Socket.IO + DB)
+- 📩 **Real-time + stored notifications** (Socket.IO + MongoDB)
 - ⚠️ **Report & moderation** system with admin approval
 - 📈 **Leaderboard + profile reputation**
 - 🧩 Modular MVC architecture with clear separation of concerns
@@ -28,31 +39,29 @@
 |-------------------|------------------------|
 | ![Ask Screenshot](https://github.com/user-attachments/assets/f3b9d37a-f53c-49f0-ba8b-85e9d226f5b3) | ![Noti Screenshot](https://github.com/user-attachments/assets/d895b228-8d21-435f-b4f4-9411b022f646) |
 
-
-
 ---
 
 ## 🧪 Testing
 
-- ✅ Unit tests with Jest
-- 🔄 Integration tests with Supertest
-- 📊 Test coverage with `npm run test:coverage`
-- 🧪 Mongo Memory Server for clean DB mocking
+- ✅ Unit tests with **Jest**
+- 🔄 Integration tests with **Supertest**
+- 📊 Test coverage tracked via **Codecov**
+- 🧪 Mocking database using **MongoMemoryServer**
 
 ---
 
 ## 🧰 Tech Stack
 
-| Layer        | Tech           |
-|--------------|----------------|
-| Backend      | Node.js, Express |
-| Database     | MongoDB + Mongoose |
+| Layer        | Tech                    |
+|--------------|-------------------------|
+| Backend      | Node.js, Express        |
+| Database     | MongoDB + Mongoose      |
 | Auth         | JWT + Passport (OAuth2) |
-| Realtime     | Socket.IO |
-| Upload       | Cloudinary |
-| Email        | Nodemailer |
-| CI/CD        | GitHub Actions |
-| Testing      | Jest + Supertest |
+| Realtime     | Socket.IO               |
+| Upload       | Cloudinary              |
+| Email        | Nodemailer              |
+| CI/CD        | GitHub Actions          |
+| Testing      | Jest + Supertest        |
 
 ---
 
@@ -68,16 +77,3 @@
 ├── utils/             # Email, validation, token
 ├── tests/             # Jest + Supertest
 └── .github/workflows/ # CI/CD configs
-
-# Clone repo
-git clone https://github.com/Benlaptrinh/BackEnd_Stackoverflow.git
-cd BackEnd_Stackoverflow
-
-# Install deps
-npm install
-
-# Set up environment
-cp .env.example .env
-
-# Run locally
-npm run dev
