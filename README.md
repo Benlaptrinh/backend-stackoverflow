@@ -77,3 +77,19 @@
 ├── utils/             # Email, validation, token
 ├── tests/             # Jest + Supertest
 └── .github/workflows/ # CI/CD configs
+
+## 🚀 Getting Started
+
+```bash
+# Clone the repository
+git clone https://github.com/Benlaptrinh/BackEnd_Stackoverflow.git
+cd BackEnd_Stackoverflow
+
+# Install dependencies
+npm install
+
+# Set up environment variables
+cp .env.example .env
+
+# Run the development server
+npm run dev
