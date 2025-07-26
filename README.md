@@ -27,7 +27,7 @@
 |-------------------|------------------------|
 | ![Ask Screenshot](https://github.com/user-attachments/assets/f3b9d37a-f53c-49f0-ba8b-85e9d226f5b3) | ![Noti Screenshot](https://github.com/user-attachments/assets/d895b228-8d21-435f-b4f4-9411b022f646) |
 
-> _(Bạn có thể thay bằng ảnh thật hoặc GIF demo ứng dụng sau)_
+
 
 ---
 
