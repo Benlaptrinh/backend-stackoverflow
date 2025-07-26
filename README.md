@@ -1,4 +1,4 @@
-<img width="512" height="512" alt="image" src="https://github.com/user-attachments/assets/d895b228-8d21-435f-b4f4-9411b022f646" /># BackEnd_Stackoverflow
+# BackEnd_Stackoverflow
 
 ![CI](https://github.com/Benlaptrinh/BackEnd_Stackoverflow/actions/workflows/main.yml/badge.svg)
 ![Node.js](https://img.shields.io/badge/node-18-green)
@@ -25,10 +25,9 @@
 
 | Ask Question Flow | Real-time Notification |
 |-------------------|------------------------|
-| ![ask](<img width="3000" height="2000" alt="image" src="https://github.com/user-attachments/assets/f3b9d37a-f53c-49f0-ba8b-85e9d226f5b3" />
-) 
+| ![Ask Screenshot](https://github.com/user-attachments/assets/f3b9d37a-f53c-49f0-ba8b-85e9d226f5b3) | ![Noti Screenshot](https://github.com/user-attachments/assets/d895b228-8d21-435f-b4f4-9411b022f646) |
 
-> _(Bạn có thể thay bằng hình thật từ FE hoặc demo video gif sau)_
+> _(Bạn có thể thay bằng ảnh thật hoặc GIF demo ứng dụng sau)_
 
 ---
 
@@ -36,8 +35,8 @@
 
 - ✅ Unit tests with Jest
 - 🔄 Integration tests with Supertest
-- 📊 Code coverage with `--coverage`
-- 🧪 Mongo Memory Server for clean DB tests
+- 📊 Test coverage with `npm run test:coverage`
+- 🧪 Mongo Memory Server for clean DB mocking
 
 ---
 
@@ -68,9 +67,7 @@
 ├── utils/             # Email, validation, token
 ├── tests/             # Jest + Supertest
 └── .github/workflows/ # CI/CD configs
-## 🚀 Getting Started
 
-```bash
 # Clone repo
 git clone https://github.com/Benlaptrinh/BackEnd_Stackoverflow.git
 cd BackEnd_Stackoverflow
