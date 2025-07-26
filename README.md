@@ -8,9 +8,12 @@
 ## 🚀 Features
 
 - User authentication (login/register)
-- Create/edit/delete questions
+- Create, edit, delete questions
 - Post answers and comments
 - Vote and tag system
+- Report & moderation
+- Notification system (real-time + stored)
+- OAuth (Google & GitHub)
 - RESTful APIs with proper error handling
 
 ## 🧪 Testing
