@@ -1,9 +1,19 @@
-// tests/services/userService.test.js
 const userService = require('../../services/userService');
 const User = require('../../models/User');
 const bcrypt = require('bcrypt');
+const redis = require('../../utils/redis');
+
 jest.mock('../../models/User');
 jest.mock('bcrypt');
+
+// ✅ MOCK redis để tránh lỗi khi test
+jest.mock('../../utils/redis', () => ({
+    get: jest.fn(),
+    set: jest.fn(),
+    del: jest.fn(),
+    close: jest.fn() // để tránh lỗi nếu bạn gọi redis.close()
+
+}));
 
 describe('userService', () => {
     afterEach(() => {
@@ -30,7 +40,6 @@ describe('userService', () => {
                 username: 'test',
                 email: 'test@example.com',
                 password: '123456',
-                // không truyền role, avatar
             };
 
             const hashed = 'hashedpassword';
@@ -58,7 +67,6 @@ describe('userService', () => {
         });
     });
 
-
     describe('updateUser', () => {
         it('should update and return user without password', async () => {
             const userId = 'abc123';
@@ -85,6 +93,7 @@ describe('userService', () => {
             expect(User.findByIdAndDelete).toHaveBeenCalledWith(userId);
         });
     });
+
     describe('getUserById', () => {
         it('should return user without password', async () => {
             const fakeUser = { _id: 'u123', username: 'alice' };
@@ -97,4 +106,7 @@ describe('userService', () => {
         });
     });
 
+    afterAll(async () => {
+        await redis.close(); // gọi hàm đã định nghĩa
+    });
 });

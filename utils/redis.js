@@ -1,14 +1,21 @@
 const Redis = require('ioredis');
 require('dotenv').config();
 
-const redis = new Redis(process.env.REDIS_URL); // dùng biến môi trường ở đây
+const redis = new Redis(process.env.REDIS_URL);
 
-redis.on('connect', () => {
-    console.log('✅ Redis connected');
-});
+// ✅ Chỉ log khi không chạy test
+if (process.env.NODE_ENV !== 'test') {
+    redis.on('connect', () => {
+        console.log('✅ Redis connected');
+    });
 
-redis.on('error', (err) => {
-    console.error('❌ Redis error:', err);
-});
+    redis.on('error', (err) => {
+        console.error('❌ Redis connection error:', err);
+    });
+}
+redis.close = async () => {
+    await redis.quit();
+};
+
 
 module.exports = redis;
