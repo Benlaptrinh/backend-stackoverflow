@@ -1,5 +1,6 @@
 
 const userService = require('../services/userService');
+const redis = require('../utils/redis');
 
 exports.getHello = (req, res) => {
     res.json({ message: 'Hello from user controller!' });

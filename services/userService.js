@@ -2,6 +2,7 @@ const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const cache = require('../services/cacheService');
 const cacheKeys = require('../utils/cacheKeys');
+const redis = require('../utils/redis');
 
 exports.getUserById = async (id) => {
     return User.findById(id).select('-password');
@@ -95,5 +96,5 @@ exports.getPublicProfile = async (userId) => {
 
 };
 exports.logout = async (userId) => {
-    await redis.del(REFRESH_KEY(userId));
+    await redis.del(cacheKeys.refreshToken(userId));
 };

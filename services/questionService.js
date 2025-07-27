@@ -2,7 +2,6 @@ const Question = require('../models/Question');
 const Answer = require('../models/Answer');
 const answerService = require('./answerService');
 const User = require('../models/User');
-const { Types } = require('mongoose');
 const cacheKeys = require('../utils/cacheKeys');
 const cache = require('../services/cacheService');
 const Tag = require('../models/Tag'); // Thêm ở đầu
