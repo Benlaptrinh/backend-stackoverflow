@@ -5,7 +5,7 @@
 ![Node.js](https://img.shields.io/badge/node-18-green)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
-📌 A scalable backend API that mimics StackOverflow — built with Node.js, Express, MongoDB, and Socket.IO.
+📌 A scalable backend API that mimics StackOverflow — built with Node.js, Express, MongoDB, Socket.IO, and Redis.
 
 ---
 
@@ -29,6 +29,7 @@
 - 📩 **Real-time + stored notifications** (Socket.IO + MongoDB)
 - ⚠️ **Report & moderation** system with admin approval
 - 📈 **Leaderboard + profile reputation**
+- ⚡ **Smart Caching with Redis** for leaderboard, popular tags, user profiles, and search results
 - 🧩 Modular MVC architecture with clear separation of concerns
 
 ---
@@ -56,6 +57,7 @@
 |--------------|-------------------------|
 | Backend      | Node.js, Express        |
 | Database     | MongoDB + Mongoose      |
+| Caching      | Redis                   |
 | Auth         | JWT + Passport (OAuth2) |
 | Realtime     | Socket.IO               |
 | Upload       | Cloudinary              |
@@ -74,7 +76,7 @@
 ├── routes/            # API routes
 ├── middlewares/       # JWT, error, rate-limit, upload
 ├── sockets/           # Socket.IO logic
-├── utils/             # Email, validation, token
+├── utils/             # Email, validation, token, redis
 ├── tests/             # Jest + Supertest
 └── .github/workflows/ # CI/CD configs
 
@@ -90,6 +92,9 @@ npm install
 
 # Set up environment variables
 cp .env.example .env
+
+# Start Redis (Docker)
+docker run -d --name redis-server -p 6379:6379 redis
 
 # Run the development server
 npm run dev
