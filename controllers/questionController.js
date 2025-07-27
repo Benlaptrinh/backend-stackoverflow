@@ -81,11 +81,11 @@ exports.deleteQuestion = async (req, res, next) => {
 
 exports.searchQuestions = async (req, res, next) => {
     try {
-        const { q, sort, tag } = req.query;
+        const { q, sort, tags: tagName } = req.query;
         const questions = await questionService.searchQuestions({
             q,
             sortBy: sort,
-            tagId: tag
+            tagName
         });
         res.json(questions);
     } catch (err) {

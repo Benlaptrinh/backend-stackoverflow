@@ -121,3 +121,13 @@ exports.getPublicProfile = async (req, res, next) => {
         next(err);
     }
 };
+// authController.js
+exports.logout = async (req, res, next) => {
+    try {
+        await redis.del(`refresh:${req.user._id}`);
+        res.clearCookie('refreshToken');
+        res.json({ message: 'Logged out successfully' });
+    } catch (err) {
+        next(err);
+    }
+};

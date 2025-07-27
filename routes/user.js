@@ -30,4 +30,6 @@ router.post('/:id/follow', authMiddleware, userController.toggleFollow);
 
 router.get('/:id/profile', userController.getPublicProfile);
 
+router.post('/logout', authMiddleware, userController.logout);
+
 module.exports = router;

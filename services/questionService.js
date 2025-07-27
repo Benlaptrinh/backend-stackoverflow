@@ -2,12 +2,16 @@ const Question = require('../models/Question');
 const Answer = require('../models/Answer');
 const answerService = require('./answerService');
 const User = require('../models/User');
-const mongoose = require('mongoose'); // ✅ THÊM DÒNG NÀY
+const { Types } = require('mongoose');
+const cacheKeys = require('../utils/cacheKeys');
+const cache = require('../services/cacheService');
+const Tag = require('../models/Tag'); // Thêm ở đầu
 
 
 exports.createQuestion = async ({ title, content, tags, author, images }) => {
     const question = await Question.create({ title, content, tags, author, images });
     await User.findByIdAndUpdate(author, { $inc: { reputation: 5 } });
+    await cache.del(cacheKeys.popularTags);
     return question;
 };
 
@@ -47,9 +51,9 @@ exports.toggleUpvote = async (questionId, userId) => {
     const index = question.upvotes.indexOf(userId);
 
     if (index === -1) {
-        question.upvotes.push(userId); // Chưa like → thêm
+        question.upvotes.push(userId);
     } else {
-        question.upvotes.splice(index, 1); // Đã like → bỏ
+        question.upvotes.splice(index, 1);
     }
 
     await question.save();
@@ -69,8 +73,11 @@ exports.updateQuestion = async (id, data, userId) => {
     if (question.author.toString() !== userId.toString()) {
         throw new Error('FORBIDDEN');
     }
-
-    return await Question.findByIdAndUpdate(id, data, { new: true });
+    const updateQuestion = await Question.findByIdAndUpdate(id, data, { new: true });
+    if (data.tags) {
+        await cache.del(cacheKeys.popularTags);
+    }
+    return updateQuestion;
 };
 
 exports.deleteQuestion = async (id, user) => {
@@ -81,53 +88,39 @@ exports.deleteQuestion = async (id, user) => {
     const isAdmin = user.role === 'admin';
     if (!isOwner && !isAdmin) throw new Error('FORBIDDEN');
 
-    // 🧨 Xoá toàn bộ answer trong question đó (và cả comment nhờ service)
     const answers = await Answer.find({ question: id });
     for (const answer of answers) {
         await answerService.deleteAnswerById(answer._id);
     }
-
-    // ✅ Xoá câu hỏi
     await question.deleteOne();
+    await cache.del(cacheKeys.popularTags);
+
     return { deleted: true };
 };
+exports.searchQuestions = async ({ q, sortBy, tagName }) => {
+    const tagKey = tagName || 'all';
+    const sortKey = sortBy || 'new';
+    const queryKey = q || '';
 
-exports.searchQuestions = async ({ q, sortBy }) => {
+    const key = cacheKeys.questionSearch(tagKey, sortKey, queryKey);
+    const cached = await cache.get(key);
+    if (cached) return cached;
+
     const filter = {};
 
-    if (q) {
-        filter.title = { $regex: q, $options: 'i' }; // tìm không phân biệt hoa thường
+    if (tagName) {
+        const tag = await Tag.findOne({ name: tagName });
+        if (tag) {
+            filter.tags = tag._id;
+        } else {
+            return [];
+        }
     }
-
-    let sortOption = { createdAt: -1 }; // mặc định: mới nhất
-    if (sortBy === 'views') sortOption = { views: -1 };
-    if (sortBy === 'votes') sortOption = { upvotesCount: -1 };
-
-    // Trick để sort theo độ dài mảng upvotes
-    const questions = await Question.aggregate([
-        { $match: filter },
-        {
-            $addFields: {
-                upvotesCount: { $size: '$upvotes' }
-            }
-        },
-        { $sort: sortOption },
-        { $limit: 50 } // giới hạn số lượng trả về
-    ]);
-
-    return questions;
-};
-
-exports.searchQuestions = async ({ q, sortBy, tagId }) => {
-    const filter = {};
 
     if (q) {
         filter.title = { $regex: q, $options: 'i' };
     }
 
-    if (tagId) {
-        filter.tags = new mongoose.Types.ObjectId(tagId); // ✅ đúng cú pháp
-    }
     let sortOption = { createdAt: -1 };
     if (sortBy === 'views') sortOption = { views: -1 };
     if (sortBy === 'votes') sortOption = { upvotesCount: -1 };
@@ -143,8 +136,10 @@ exports.searchQuestions = async ({ q, sortBy, tagId }) => {
         { $limit: 50 }
     ]);
 
+    await cache.set(key, questions, 60); // TTL: 60s
     return questions;
 };
+
 
 exports.getQuestionsByUserIfFollowed = async (currentUserId, targetUserId) => {
     const currentUser = await User.findById(currentUserId);

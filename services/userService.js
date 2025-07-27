@@ -1,12 +1,19 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
+const cache = require('../services/cacheService');
+const cacheKeys = require('../utils/cacheKeys');
 
 exports.getUserById = async (id) => {
     return User.findById(id).select('-password');
 };
 
 exports.getAllUsers = async () => {
-    return User.find().select('-password');
+    const cached = await cache.get(cacheKeys.allUsers);
+    if (cached) return cached;
+
+    const users = await User.find().select('-password');
+    await cache.set(cacheKeys.allUsers, users, 120);
+    return users;
 };
 
 exports.createUser = async ({ username, email, password, role, avatar }) => {
@@ -18,15 +25,23 @@ exports.createUser = async ({ username, email, password, role, avatar }) => {
         role: role || 'user',
         avatar: avatar || null
     });
-    return await user.save();
+    const savedUser = await user.save();
+    await cache.del(cacheKeys.allUsers);
+    return savedUser;
 };
 
 exports.updateUser = async (id, userData) => {
-    return User.findByIdAndUpdate(id, userData, { new: true }).select('-password');
+    const updatedUser = await User.findByIdAndUpdate(id, userData, { new: true }).select('-password');
+    await cache.del(cacheKeys.allUsers);
+    return updatedUser;
+
 };
 
 exports.deleteUser = async (id) => {
-    return User.findByIdAndDelete(id);
+    const deleteUser = await User.findByIdAndDelete(id);
+    await cache.del(cacheKeys.allUsers);
+
+    return deleteUser;
 };
 
 exports.toggleFollow = async (currentUserId, targetUserId) => {
@@ -57,12 +72,15 @@ exports.toggleFollow = async (currentUserId, targetUserId) => {
 };
 
 exports.getPublicProfile = async (userId) => {
+    const key = cacheKeys.publicProfile(userId);
+    const cached = await cache.get(key);
+    if (cached) return cached;
+
     const user = await User.findById(userId)
         .select('username avatar reputation followers following createdAt');
-
     if (!user) throw new Error('USER_NOT_FOUND');
 
-    return {
+    const Profile_Public = {
         _id: user._id,
         username: user.username,
         avatar: user.avatar,
@@ -71,4 +89,11 @@ exports.getPublicProfile = async (userId) => {
         followingCount: user.following.length,
         createdAt: user.createdAt
     };
+
+    await cache.set(key, Profile_Public, 120); // TTL: 2 phút
+    return Profile_Public
+
+};
+exports.logout = async (userId) => {
+    await redis.del(REFRESH_KEY(userId));
 };

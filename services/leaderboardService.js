@@ -1,6 +1,8 @@
 const Question = require('../models/Question');
 const Answer = require('../models/Answer');
 const User = require('../models/User');
+const cache = require('../services/cacheService');
+const cacheKeys = require('../utils/cacheKeys');
 
 exports.getTopQuestionsByUpvotes = async () => {
     return await Question.find()
@@ -81,4 +83,23 @@ exports.getTopAnswersByLikes = async () => {
     ]);
 
     return await Answer.populate(top, { path: 'author', select: 'username avatar createdAt' });
+};
+
+exports.getLeaderboard = async () => {
+    const cached = await cache.get(cacheKeys.leaderboard);
+    if (cached) return cached;
+
+    const result = {
+        topQuestionsByUpvotes: await exports.getTopQuestionsByUpvotes(),
+        topQuestionsByAnswers: await exports.getTopQuestionsByAnswers(),
+        topUsersByQuestions: await exports.getTopUsersByQuestions(),
+        topUsersByFollowers: await exports.getTopUsersByFollowers(),
+        topAnswersByLikes: await exports.getTopAnswersByLikes(),
+    };
+    console.log('[DEBUG] Đang lưu leaderboard vào Redis...');
+
+    await cache.set(cacheKeys.leaderboard, result, 120); // TTL = 2 phút
+    console.log('[DEBUG] Lưu leaderboard thành công vào Redis');
+
+    return result;
 };

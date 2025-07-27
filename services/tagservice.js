@@ -1,5 +1,7 @@
 const Tag = require('../models/Tag');
 const Question = require('../models/Question');
+const cache = require('../services/cacheService');
+const cacheKeys = require('../utils/cacheKeys');
 
 exports.getAllTags = async () => {
     return await Tag.find().sort({ createdAt: -1 });
@@ -26,6 +28,8 @@ exports.getQuestionsByTag = async (tagId) => {
 };
 
 exports.getPopularTags = async (limit = 10) => {
+    const cached = await cache.get(cacheKeys.popularTags);
+    if (cached) return cached;
     const agg = await Question.aggregate([
         { $unwind: '$tags' },
         { $group: { _id: '$tags', count: { $sum: 1 } } },
@@ -50,5 +54,6 @@ exports.getPopularTags = async (limit = 10) => {
         }
     ]);
 
+    await cache.set(cacheKeys.popularTags, agg, 120);
     return agg;
 };
