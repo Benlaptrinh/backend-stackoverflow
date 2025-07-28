@@ -1,11 +1,10 @@
 # BackEnd_Stackoverflow
+
 ### ✅ CI Status  
 [![CI](https://github.com/Benlaptrinh/BackEnd_Stackoverflow/actions/workflows/main.yml/badge.svg)](https://github.com/Benlaptrinh/BackEnd_Stackoverflow/actions/workflows/main.yml)
 [![codecov](https://codecov.io/gh/Benlaptrinh/backend-stackoverflow/branch/main/graph/badge.svg)](https://codecov.io/gh/Benlaptrinh/backend-stackoverflow)
 ![Node.js](https://img.shields.io/badge/node-18-green)
 ![License](https://img.shields.io/badge/license-MIT-blue)
-
-
 
 📌 A scalable backend API that mimics StackOverflow — built with Node.js, Express, MongoDB, Socket.IO, and Redis.
 
@@ -19,6 +18,8 @@
 - [Tech Stack](#-tech-stack)
 - [Project Structure](#-project-structure)
 - [Getting Started](#-getting-started)
+- [Contributing](#-contributing)
+- [License](#-license)
 
 ---
 
@@ -82,6 +83,7 @@
 ├── tests/             # Jest + Supertest
 └── .github/workflows/ # CI/CD configs
 
+
 ## 🚀 Getting Started
 
 ```bash
@@ -100,3 +102,9 @@ docker run -d --name redis-server -p 6379:6379 redis
 
 # Run the development server
 npm run dev
+
+# Run unit & integration tests
+npm test
+
+# Run tests with coverage report
+npm run test -- --coverage
