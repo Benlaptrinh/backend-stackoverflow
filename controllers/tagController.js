@@ -1,4 +1,4 @@
-const tagService = require('../services/tagservice');
+const tagService = require('../services/tagService');
 
 exports.getAllTags = async (req, res, next) => {
     try {

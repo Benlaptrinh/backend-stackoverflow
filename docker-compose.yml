@@ -1,0 +1,149 @@
+# services:
+#   backend:
+#     build: .
+#     env_file: .env
+#     ports:
+#       - "3000:3000"   # host:container
+#       - "9229:9229"     # Node inspector (debug)
+#     volumes:
+#       - ./:/app         # mount code để hot-reload
+#       - /app/node_modules
+#     # Node 18 không có --watch ổn định => dùng nodemon
+#     # đảm bảo nodemon có trong devDependencies (npm i -D nodemon) và đã npm ci
+#     command: sh -c "if [ ! -d node_modules ]; then npm ci; fi; npx nodemon --inspect=0.0.0.0:9229 index.js"
+#     depends_on:
+#       mongo:
+#         condition: service_healthy
+#       redis:
+#         condition: service_healthy
+#     healthcheck:
+#       test:
+#         [
+#           "CMD-SHELL",
+#           "node -e \"const http=require('http');http.get('http://localhost:3000/ready',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1));\""
+#         ]
+#       interval: 5s
+#       timeout: 3s
+#       retries: 10
+#       start_period: 15s
+
+#   mongo:
+#     image: mongo:6
+#     environment:
+#       MONGO_INITDB_ROOT_USERNAME: root
+#       MONGO_INITDB_ROOT_PASSWORD: root
+#     ports: ["27017:27017"]
+#     volumes:
+#       - mongodata:/data/db
+#     healthcheck:
+#       test: ["CMD-SHELL","mongosh --quiet --eval 'db.runCommand({ ping: 1 })' || exit 1"]
+#       interval: 5s
+#       retries: 10
+
+#   redis:
+#     image: redis:7
+#     ports: ["6379:6379"]
+#     healthcheck:
+#       test: ["CMD", "redis-cli", "ping"]
+#       interval: 5s
+#       retries: 10
+
+#   # Tùy chọn: UI xem DB
+#   mongo-express:
+#     image: mongo-express:1
+#     ports: ["8081:8081"]
+#     environment:
+#       ME_CONFIG_MONGODB_ADMINUSERNAME: root
+#       ME_CONFIG_MONGODB_ADMINPASSWORD: root
+#       ME_CONFIG_MONGODB_URL: mongodb://root:root@mongo:27017/?authSource=admin
+#     depends_on:
+#       mongo:
+#         condition: service_healthy
+
+# volumes:
+#   mongodata:
+
+version: "3.9"
+
+services:
+  backend:
+    build: .
+    env_file: .env
+    ports:
+      - "127.0.0.1:3000:3000" # App
+      - "127.0.0.1:9229:9229" # Node inspector
+    volumes:
+      - ./:/app
+      - node_modules_cache:/app/node_modules
+    command: >
+      sh -c "if [ ! -d node_modules ]; then npm ci; fi;
+             npx nodemon --inspect=0.0.0.0:9229 index.js"
+    depends_on:
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: >
+        CMD-SHELL node -e "const http=require('http');
+          http.get('http://localhost:3000/ready',r=>process.exit(r.statusCode===200?0:1))
+          .on('error',()=>process.exit(1));"
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 15s
+    restart: unless-stopped
+    networks: [appnet]
+
+  mongo:
+    image: mongo:6
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-root}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-root}
+    ports:
+      - "127.0.0.1:27017:27017"
+    volumes:
+      - mongodata:/data/db
+    healthcheck:
+      test: ["CMD-SHELL","mongosh --quiet --eval 'db.runCommand({ ping: 1 })' || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+    networks: [appnet]
+
+  redis:
+    image: redis:7
+    ports:
+      - "127.0.0.1:6379:6379"
+    healthcheck:
+      test: ["CMD","redis-cli","ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+    networks: [appnet]
+
+  # Tùy chọn: UI quản lý MongoDB
+  mongo-express:
+    image: mongo-express:1
+    profiles: ["ui"] # chỉ chạy khi docker compose --profile ui up
+    ports:
+      - "127.0.0.1:8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_INITDB_ROOT_USERNAME:-root}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-root}
+      ME_CONFIG_MONGODB_URL: mongodb://${MONGO_INITDB_ROOT_USERNAME:-root}:${MONGO_INITDB_ROOT_PASSWORD:-root}@mongo:27017/?authSource=admin
+    depends_on:
+      mongo:
+        condition: service_healthy
+    restart: unless-stopped
+    networks: [appnet]
+
+volumes:
+  mongodata:
+  node_modules_cache:
+
+networks:
+  appnet:
+    driver: bridge
