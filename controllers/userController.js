@@ -36,8 +36,8 @@ exports.getAllUsers = async (req, res, next) => {
     try {
         const users = await userService.getAllUsers();
 
-        if (req.app?.get) {
-            const io = req.app.get('io');
+        const io = req.app?.get('io');
+        if (io) {
             io.emit("viewNotice", "có người xem bạn");
         }
 
@@ -46,6 +46,7 @@ exports.getAllUsers = async (req, res, next) => {
         next(err);
     }
 };
+
 
 exports.createUser = async (req, res, next) => {
     try {
