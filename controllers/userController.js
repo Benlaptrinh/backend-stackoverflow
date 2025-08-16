@@ -34,6 +34,7 @@ exports.getUserById = async (req, res, next) => {
 
 exports.getAllUsers = async (req, res, next) => {
     try {
+        const mew = "mew";
         const users = await userService.getAllUsers();
 
         const io = req.app?.get('io');
