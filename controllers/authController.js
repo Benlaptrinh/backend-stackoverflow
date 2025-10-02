@@ -4,11 +4,6 @@ exports.register = async (req, res, next) => {
     try {
         const { username, email, password } = req.body;
 
-        // Validate required fields
-        if (!username || !email || !password) {
-            return res.status(400).json({ message: 'All fields are required' });
-        }
-
         // Register the user
         await authService.register({ username, email, password });
 
@@ -22,11 +17,6 @@ exports.register = async (req, res, next) => {
 exports.login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
-
-        // Validate required fields
-        if (!email || !password) {
-            return res.status(400).json({ message: 'All fields are required' });
-        }
 
         // Authenticate user and get tokens
         const { accessToken, refreshToken } = await authService.login({ email, password });

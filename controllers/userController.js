@@ -50,9 +50,6 @@ exports.getAllUsers = async (req, res, next) => {
 exports.createUser = async (req, res, next) => {
     try {
         const { username, email, password, role } = req.body;
-        if (!username || !email || !password) {
-            return res.status(400).json({ message: 'Missing required fields' });
-        }
 
         const user = await userService.createUser({
             username,
@@ -86,7 +83,6 @@ exports.updateUser = async (req, res, next) => {
 exports.deleteUser = async (req, res, next) => {
     try {
         const { userId } = req.body;
-        if (!userId) return res.status(400).json({ message: 'userId is required' });
         const deleted = await userService.deleteUser(userId);
         if (!deleted) return res.status(404).json({ message: 'User not found' });
         res.json({ message: 'User deleted successfully' });
