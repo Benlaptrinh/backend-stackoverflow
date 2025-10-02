@@ -1,4 +1,4 @@
-module.exports = (err, req, res) => {
+module.exports = (err, req, res, next) => {
     console.error('[Global Error]', {
         message: err.message,
         stack: err.stack,
