@@ -55,7 +55,8 @@ app.get('/ready', async (req, res) => {
     let redisOK = false;
     try {
         redisOK = (await redis.ping()) === 'PONG';
-    } catch (e) {
+    } catch (err) {
+        console.error('Redis readiness ping failed:', err);
         redisOK = false;
     }
     const ok = mongoOK && redisOK;
@@ -83,8 +84,8 @@ app.set('io', io);
 try {
     const initSockets = require('./sockets');
     if (typeof initSockets === 'function') initSockets(io);
-} catch (_) {
-
+} catch (err) {
+    console.error('Socket initialization failed:', err);
 }
 
 app.use(errorHandler);
@@ -98,7 +99,17 @@ const PORT = process.env.PORT || 3000;
 
 
 process.on('SIGTERM', async () => {
-    try { await mongoose.connection.close(); } catch { }
-    try { await redis.quit?.(); } catch { }
+    try {
+        await mongoose.connection.close();
+    } catch (err) {
+        console.error('Error closing MongoDB connection on shutdown:', err);
+    }
+    try {
+        if (typeof redis.quit === 'function') {
+            await redis.quit();
+        }
+    } catch (err) {
+        console.error('Error closing Redis connection on shutdown:', err);
+    }
     server.close(() => process.exit(0));
 });
